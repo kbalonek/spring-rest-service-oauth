@@ -1,5 +1,12 @@
 = Spring REST Service OAuth
 
+The sample uses http://oauthlib.readthedocs.org/en/latest/oauth2/grants/password.html[Resource Owner Password Credentials Grant]
+1. The client application uses basic authentication to access all endpoints in the webapp
+2. The user gives the client app the user's login and password.
+3. The client exchanges the user's credentials for a token that gives it the access to the user's resources.
+
+== Original documentation
+
 image::https://travis-ci.org/royclarkson/spring-rest-service-oauth.svg[Build Status, link=https://travis-ci.org/royclarkson/spring-rest-service-oauth/]
 
 This is a simple REST service that provides a single RESTful endpoint protected by OAuth 2. The REST service is based on the https://spring.io/guides/gs/rest-service/[Building a RESTful Web Service] getting started guide. This project incorporates the new Java-based configuration support, now available in Spring Security OAuth 2.0. Please log any issues or feature requests to the https://github.com/spring-projects/spring-security-oauth/issues[Spring Security OAuth project].
