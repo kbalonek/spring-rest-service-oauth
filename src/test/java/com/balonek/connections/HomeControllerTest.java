@@ -40,29 +40,10 @@ import org.springframework.web.context.WebApplicationContext;
  * @author Kris Balonek
  * @author Roy Clarkson
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration(classes = Application.class)
-public class HomeControllerTest {
-
-	@Autowired
-	WebApplicationContext context;
-
-	@Autowired
-	private FilterChainProxy springSecurityFilterChain;
+public class HomeControllerTest extends AbstractSecuredControllerTest{
 
 	@InjectMocks
 	HomeController controller;
-
-	private MockMvc mvc;
-
-	@Before
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-		mvc = MockMvcBuilders.webAppContextSetup(context)
-				.addFilter(springSecurityFilterChain)
-				.build();
-	}
 
 	@Test
 	public void home() throws Exception {

@@ -37,5 +37,4 @@ public class UserController {
 	public Iterable<User> getUsers() {
 		return userDao.getAllUsers();
 	}
-
 }
