@@ -39,6 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
+ * @author Kris Balonek
  * @author Roy Clarkson
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,7 +47,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = Application.class)
 public class GreetingControllerTest {
 
-	@Autowired
+    public static final String CLIENT_ID = "clientapp";
+    public static final String CLIENT_SECRET = "123456";
+
+    @Autowired
 	WebApplicationContext context;
 
 	@Autowired
@@ -66,20 +70,27 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void greetingUnauthorized() throws Exception {
-		// @formatter:off
+	public void should_not_allow_access_to_greeting_when_not_authenticated() throws Exception {
 		mvc.perform(get("/greeting")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized())
 				.andExpect(jsonPath("$.error", is("unauthorized")));
-		// @formatter:on
 	}
 
+
+    @Test
+    public void should_not_allow_access_to_greeting_when_using_basic_authentication() throws Exception {
+        mvc.perform(get("/greeting")
+                .header("Authorization", getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error", is("unauthorized")));
+    }
+
 	private String getAccessToken(String username, String password) throws Exception {
-		String authorization = "Basic " + new String(Base64Utils.encode("clientapp:123456".getBytes()));
+		String authorization = getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET);
 		String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 
-		// @formatter:off
 		String content = mvc
 				.perform(
 						post("/oauth/token")
@@ -90,8 +101,8 @@ public class GreetingControllerTest {
 								.param("password", password)
 								.param("grant_type", "password")
 								.param("scope", "read write")
-								.param("client_id", "clientapp")
-								.param("client_secret", "123456"))
+								.param("client_id", CLIENT_ID)
+								.param("client_secret", CLIENT_SECRET))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(contentType))
 				.andExpect(jsonPath("$.access_token", is(notNullValue())))
@@ -101,57 +112,91 @@ public class GreetingControllerTest {
 				.andExpect(jsonPath("$.scope", is(equalTo("read write"))))
 				.andReturn().getResponse().getContentAsString();
 
-		// @formatter:on
-
 		return content.substring(17, 53);
 	}
 
-	@Test
-	public void greetingAuthorized() throws Exception {
-		String accessToken = getAccessToken("roy", "spring");
-
-		// @formatter:off
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.content", is("Hello, Roy!")));
-		// @formatter:on
-
-		// @formatter:off
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(2)))
-				.andExpect(jsonPath("$.content", is("Hello, Roy!")));
-		// @formatter:on
-
-		// @formatter:off
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(3)))
-				.andExpect(jsonPath("$.content", is("Hello, Roy!")));
-		// @formatter:on
+	private String getBasicAuthorizationHeader(String login, String password) {
+		String credentials = login + ":" + password;
+		return "Basic " + new String(Base64Utils.encode(credentials.getBytes()));
 	}
 
 	@Test
-	public void usersEndpointAuthorized() throws Exception {
-		// @formatter:off
+	public void should_greet_user_by_name() throws Exception {
+		String accessToken = getAccessToken("user_and_admin", "spring");
+
+		mvc.perform(get("/greeting")
+				.header("Authorization", "Bearer " + accessToken))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content", is("Hello, User and Admin!")));
+	}
+
+	@Test
+	public void should_allow_access_to_greeting_when_user_has_roles_user_and_admin() throws Exception {
+		String accessToken = getAccessToken("user_and_admin", "spring");
+
+		mvc.perform(get("/greeting")
+				.header("Authorization", "Bearer " + accessToken))
+				.andExpect(status().isOk());
+	}
+
+
+	@Test
+	public void should_allow_access_to_greeting_when_user_has_role_admin() throws Exception {
+		String accessToken = getAccessToken("admin", "spring");
+
+		mvc.perform(get("/greeting")
+				.header("Authorization", "Bearer " + accessToken))
+				.andExpect(status().isOk());
+	}
+
+
+	@Test
+	public void should_allow_access_to_greeting_when_user_has_role_user() throws Exception {
+		String accessToken = getAccessToken("user", "spring");
+
+		mvc.perform(get("/greeting")
+				.header("Authorization", "Bearer " + accessToken))
+				.andExpect(status().isOk());
+	}
+
+    @Test
+    public void should_not_allow_access_to_users_when_not_authenticated() throws Exception {
+        mvc.perform(get("/users")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error", is("unauthorized")));
+    }
+
+    @Test
+    public void should_not_allow_access_to_users_when_using_basic_authentication() throws Exception {
+        mvc.perform(get("/users")
+                .header("Authorization", getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error", is("unauthorized")));
+    }
+
+	@Test
+	public void should_allow_access_to_users_when_user_has_roles_user_and_admin() throws Exception {
 		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken("roy", "spring")))
+				.header("Authorization", "Bearer " + getAccessToken("user_and_admin", "spring")))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(3)));
-		// @formatter:on
 	}
 
 	@Test
-	public void usersEndpointAccessDenied() throws Exception {
-		// @formatter:off
+	public void should_allow_access_to_users_when_user_has_role_admin() throws Exception {
 		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken("craig", "spring")))
+				.header("Authorization", "Bearer " + getAccessToken("admin", "spring")))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(3)));
+	}
+
+	@Test
+	public void should_not_allow_access_to_users_when_user_has_role_user() throws Exception {
+		mvc.perform(get("/users")
+				.header("Authorization", "Bearer " + getAccessToken("user", "spring")))
 				.andExpect(status().is(403));
-		// @formatter:on
 	}
 
 }
