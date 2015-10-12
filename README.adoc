@@ -5,7 +5,75 @@ The sample uses http://oauthlib.readthedocs.org/en/latest/oauth2/grants/password
 2. The user gives the client app the user's login and password.
 3. The client exchanges the user's credentials for a token that gives it the access to the user's resources.
 
-== Original documentation
+= API
+
+== Create user
+
+Role: none
+
+POST /users/
+
+{
+   "username": "abc",
+   "password": "1234"
+}
+
+response:
+
+201 CREATED
+
+{
+   "userId": "abc",
+   "username": "abc"
+}
+
+== Get user details
+
+Role: USER
+GET /users/{userId}
+
+response:
+
+200 OK
+
+{
+   "userId": "abc",
+   "username": "abc"
+}
+
+== Add a friend
+
+Role: USER
+POST /users/{userId}/friends/{friendId}
+
+response:
+
+201 CREATED
+
+{
+   "userId": "abc"
+   "friendId": "xyz"
+}
+
+== Get user friends
+
+Role: ADMIN
+GET /users/{userId}/friends
+
+200 OK
+
+{
+   "userId": "abc",
+   "username": "abc"
+   "friends": [
+       {
+          "userId": "xyz",
+          "username": "xyz"
+       }
+   ]
+}
+
+= Original documentation
 
 image::https://travis-ci.org/royclarkson/spring-rest-service-oauth.svg[Build Status, link=https://travis-ci.org/royclarkson/spring-rest-service-oauth/]
 
