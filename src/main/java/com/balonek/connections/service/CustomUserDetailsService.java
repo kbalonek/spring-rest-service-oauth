@@ -17,8 +17,9 @@
 package com.balonek.connections.service;
 
 import java.util.Collection;
+import java.util.Optional;
 
-import com.balonek.connections.data.UserRepository;
+import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,20 +32,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private final UserRepository userRepository;
+	private final UserDao userDao;
 
 	@Autowired
-	public CustomUserDetailsService(UserRepository userRepository) {
-		this.userRepository = userRepository;
+	public CustomUserDetailsService(UserDao userDao) {
+		this.userDao = userDao;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByLogin(username);
-		if (user == null) {
+		Optional<User> user = userDao.findByLogin(username);
+		if (!user.isPresent()) {
 			throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
 		}
-		return new UserRepositoryUserDetails(user);
+		return new UserRepositoryUserDetails(user.get());
 	}
 
 	private final static class UserRepositoryUserDetails extends User implements UserDetails {
@@ -58,11 +59,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 		@Override
 		public Collection<? extends GrantedAuthority> getAuthorities() {
 			return getRoles();
-		}
-
-		@Override
-		public String getUsername() {
-			return getLogin();
 		}
 
 		@Override

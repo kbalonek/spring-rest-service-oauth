@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package com.balonek.connections.controller;
+package com.balonek.connections.data;
 
-import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
-@RestController
-public class UserController {
+public interface UserDao {
 
-	private final UserDao userDao;
-
-	@Autowired
-	public UserController(UserDao userDao) {
-		this.userDao = userDao;
-	}
-
-	@RequestMapping("/users")
-	public Iterable<User> getUsers() {
-		return userDao.getAllUsers();
-	}
-
+	Optional<User> findByLogin(String login);
+	Iterable<User> getAllUsers();
 }

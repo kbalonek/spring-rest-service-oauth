@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package com.balonek.connections.data;
+package com.balonek.connections.domain.security;
 
-import com.balonek.connections.domain.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.core.GrantedAuthority;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+/**
+ * @author Kris Balonek
+ */
+public enum Role implements GrantedAuthority {
 
-	User findByLogin(String login);
+	USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
+
+	private String authority;
+
+	Role(String authority) {
+		this.authority = authority;
+	}
+
+	@Override
+	public String getAuthority() {
+		return authority;
+	}
 }

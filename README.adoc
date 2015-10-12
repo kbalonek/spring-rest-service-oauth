@@ -55,10 +55,10 @@ response:
    "friendId": "xyz"
 }
 
-== Get user friends
+== Get user's friends
 
 Role: ADMIN
-GET /users/{userId}/friends
+GET /admin/users/{userId}
 
 200 OK
 

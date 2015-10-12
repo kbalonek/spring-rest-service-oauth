@@ -128,7 +128,7 @@ public class GreetingControllerTest {
 		mvc.perform(get("/greeting")
 				.header("Authorization", "Bearer " + accessToken))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content", is("Hello, User and Admin!")));
+				.andExpect(jsonPath("$.content", is("Hello, user_and_admin!")));
 	}
 
 	@Test
