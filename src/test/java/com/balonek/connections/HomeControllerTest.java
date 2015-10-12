@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package hello;
+package com.balonek.connections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.balonek.connections.controller.HomeController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

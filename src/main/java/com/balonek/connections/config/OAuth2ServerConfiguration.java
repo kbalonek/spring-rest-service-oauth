@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package hello;
+package com.balonek.connections.config;
 
+import com.balonek.connections.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

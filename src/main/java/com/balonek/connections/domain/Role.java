@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package hello.data;
+package com.balonek.connections.domain;
 
 import java.util.HashSet;
 import java.util.Set;

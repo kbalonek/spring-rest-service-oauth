@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package hello;
+package com.balonek.connections.controller;
 
-import hello.data.User;
+import com.balonek.connections.domain.User;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.balonek.connections.domain.Greeting;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

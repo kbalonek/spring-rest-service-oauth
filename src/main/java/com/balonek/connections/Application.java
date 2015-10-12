@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package hello;
+package com.balonek.connections;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@RestController
-public class HomeController {
+@SpringBootApplication
+public class Application {
 
-	@RequestMapping("/")
-	public String home() {
-		return "home";
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
 	}
-
 }

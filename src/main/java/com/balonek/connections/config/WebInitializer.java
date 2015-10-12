@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 the original author or authors.
+ * Copyright 2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package hello.data;
+package com.balonek.connections.config;
 
-import org.springframework.data.repository.CrudRepository;
+import com.balonek.connections.Application;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public class WebInitializer extends SpringBootServletInitializer {
 
-	User findByLogin(String login);
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Application.class);
+	}
+
 }

@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-package hello;
+package com.balonek.connections.data;
 
-import hello.data.User;
-import hello.data.UserRepository;
+import com.balonek.connections.domain.User;
+import org.springframework.data.repository.CrudRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+public interface UserRepository extends CrudRepository<User, Long> {
 
-@RestController
-public class UserController {
-
-	private final UserRepository userRepository;
-
-	@Autowired
-	public UserController(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
-
-	@RequestMapping("/users")
-	public Iterable<User> getUsers() {
-		return userRepository.findAll();
-	}
-
+	User findByLogin(String login);
 }

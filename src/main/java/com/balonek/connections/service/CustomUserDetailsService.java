@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package hello;
+package com.balonek.connections.service;
 
 import java.util.Collection;
 
-import hello.data.User;
-import hello.data.UserRepository;
+import com.balonek.connections.data.UserRepository;
+import com.balonek.connections.domain.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
