@@ -19,16 +19,16 @@ package com.balonek.connections.domain;
 import java.util.Collections;
 import java.util.Set;
 
-import com.balonek.connections.domain.security.Role;
+import com.balonek.connections.domain.security.Roles;
 
 public class User {
 
 	final private String userId;
 	final private String username;
 	final private String password;
-	final private Set<Role> roles;
+	final private Set<Roles> roles;
 
-	public User(String userId, String username, String password, Set<Role> roles) {
+	public User(String userId, String username, String password, Set<Roles> roles) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
@@ -51,7 +51,7 @@ public class User {
 		return password;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<Roles> getRoles() {
 		return Collections.unmodifiableSet(roles);
 	}
 }

@@ -47,20 +47,18 @@ public class OAuth2ServerConfiguration {
 
 		@Override
 		public void configure(ResourceServerSecurityConfigurer resources) {
-			// @formatter:off
 			resources
 				.resourceId(RESOURCE_ID);
-			// @formatter:on
 		}
 
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
-			// @formatter:off
 			http
 				.authorizeRequests()
 					.antMatchers("/users").hasRole("ADMIN")
-					.antMatchers("/greeting").authenticated();
-			// @formatter:on
+					.antMatchers("/greeting").authenticated()
+                    .antMatchers("/register").permitAll()
+                    .anyRequest().authenticated();
 		}
 
 	}
@@ -82,26 +80,21 @@ public class OAuth2ServerConfiguration {
 		@Override
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 				throws Exception {
-			// @formatter:off
 			endpoints
 				.tokenStore(this.tokenStore)
 				.authenticationManager(this.authenticationManager)
 				.userDetailsService(userDetailsService);
-			// @formatter:on
 		}
 
 		@Override
 		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-			// @formatter:off
 			clients
-				.inMemory()
-					.withClient("clientapp")
+                .inMemory()
+                    .withClient("clientapp")
 						.authorizedGrantTypes("password", "refresh_token")
-						.authorities("USER")
-						.scopes("read", "write")
+                    .authorities("CLIENT")
 						.resourceIds(RESOURCE_ID)
 						.secret("123456");
-			// @formatter:on
 		}
 
 		@Bean

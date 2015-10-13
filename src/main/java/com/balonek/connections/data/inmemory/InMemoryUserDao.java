@@ -4,9 +4,9 @@ import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kris Balonek
@@ -17,7 +17,7 @@ public class InMemoryUserDao implements UserDao {
     private Map<String, User> storage;
 
     public InMemoryUserDao() {
-        storage = new HashMap<String, User>();
+        storage = new ConcurrentHashMap<String, User>();
         storage.put(UserFixtures.USER_ID, UserFixtures.userWithUserRole());
         storage.put(UserFixtures.ADMIN_ID, UserFixtures.userWithAdminRole());
         storage.put(UserFixtures.USER_AND_ADMIN_ID, UserFixtures.userWithUserAndAdminRole());
@@ -31,5 +31,11 @@ public class InMemoryUserDao implements UserDao {
     @Override
     public Iterable<User> getAllUsers() {
         return storage.values();
+    }
+
+    @Override
+    public User createUser(User user) {
+        storage.put(user.getUserId(), user);
+        return user;
     }
 }

@@ -1,7 +1,7 @@
 package com.balonek.connections.data.inmemory;
 
 import com.balonek.connections.domain.User;
-import com.balonek.connections.domain.security.Role;
+import com.balonek.connections.domain.security.Roles;
 
 import java.util.EnumSet;
 
@@ -15,14 +15,14 @@ public class UserFixtures {
     public static final String USER_AND_ADMIN_ID = "user_and_admin";
 
     public static User userWithUserRole() {
-        return new User(USER_ID, USER_ID, "spring", EnumSet.of(Role.USER));
+        return new User(USER_ID, USER_ID, "spring", EnumSet.of(Roles.USER));
     }
 
     public static User userWithAdminRole() {
-        return new User(ADMIN_ID, ADMIN_ID, "spring", EnumSet.of(Role.ADMIN));
+        return new User(ADMIN_ID, ADMIN_ID, "spring", EnumSet.of(Roles.ADMIN));
     }
 
     public static User userWithUserAndAdminRole() {
-        return new User(USER_AND_ADMIN_ID, USER_AND_ADMIN_ID, "spring", EnumSet.of(Role.USER, Role.ADMIN));
+        return new User(USER_AND_ADMIN_ID, USER_AND_ADMIN_ID, "spring", EnumSet.of(Roles.USER, Roles.ADMIN));
     }
 }

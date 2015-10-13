@@ -24,4 +24,5 @@ public interface UserDao {
 
 	Optional<User> findByLogin(String login);
 	Iterable<User> getAllUsers();
+    User createUser(User user);
 }

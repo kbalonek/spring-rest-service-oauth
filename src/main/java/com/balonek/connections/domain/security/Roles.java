@@ -21,13 +21,13 @@ import org.springframework.security.core.GrantedAuthority;
 /**
  * @author Kris Balonek
  */
-public enum Role implements GrantedAuthority {
+public enum Roles implements GrantedAuthority {
 
 	USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
 	private String authority;
 
-	Role(String authority) {
+	Roles(String authority) {
 		this.authority = authority;
 	}
 
