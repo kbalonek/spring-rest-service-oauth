@@ -16,12 +16,9 @@
 
 package com.balonek.connections;
 
-import com.balonek.connections.controller.GreetingController;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.springframework.http.MediaType;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,68 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * @author Kris Balonek
- * @author Roy Clarkson
  */
-public class GreetingControllerTest extends AbstractSecuredControllerTest {
-
-	@InjectMocks
-	GreetingController controller;
-
-	@Test
-	public void should_not_allow_access_to_greeting_when_not_authenticated() throws Exception {
-		mvc.perform(get("/greeting")
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isUnauthorized())
-				.andExpect(jsonPath("$.error", is("unauthorized")));
-	}
-
-    @Test
-    public void should_not_allow_access_to_greeting_when_using_basic_authentication() throws Exception {
-        mvc.perform(get("/greeting")
-                .header("Authorization", getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.error", is("unauthorized")));
-    }
-
-	@Test
-	public void should_greet_user_by_name() throws Exception {
-		String accessToken = getAccessToken("user_and_admin", "spring");
-
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content", is("Hello, user_and_admin!")));
-	}
-
-	@Test
-	public void should_allow_access_to_greeting_when_user_has_roles_user_and_admin() throws Exception {
-		String accessToken = getAccessToken("user_and_admin", "spring");
-
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk());
-	}
-
-
-	@Test
-	public void should_allow_access_to_greeting_when_user_has_role_admin() throws Exception {
-		String accessToken = getAccessToken("admin", "spring");
-
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk());
-	}
-
-
-	@Test
-	public void should_allow_access_to_greeting_when_user_has_role_user() throws Exception {
-		String accessToken = getAccessToken("user", "spring");
-
-		mvc.perform(get("/greeting")
-				.header("Authorization", "Bearer " + accessToken))
-				.andExpect(status().isOk());
-	}
+public class UserControllerTest extends AbstractSecuredControllerTest {
 
     @Test
     public void should_not_allow_access_to_users_when_not_authenticated() throws Exception {
@@ -129,5 +66,4 @@ public class GreetingControllerTest extends AbstractSecuredControllerTest {
 				.header("Authorization", "Bearer " + getAccessToken("user", "spring")))
 				.andExpect(status().isOk());
 	}
-
 }
