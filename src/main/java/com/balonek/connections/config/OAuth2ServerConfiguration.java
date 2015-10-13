@@ -55,7 +55,8 @@ public class OAuth2ServerConfiguration {
 		public void configure(HttpSecurity http) throws Exception {
 			http
 				.authorizeRequests()
-					.antMatchers("/users").hasRole("ADMIN")
+					.antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/users").hasAnyRole("USER", "ADMIN")
 					.antMatchers("/greeting").authenticated()
                     .antMatchers("/register").permitAll()
                     .anyRequest().authenticated();

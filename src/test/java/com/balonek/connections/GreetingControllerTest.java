@@ -113,23 +113,21 @@ public class GreetingControllerTest extends AbstractSecuredControllerTest {
 	public void should_allow_access_to_users_when_user_has_roles_user_and_admin() throws Exception {
 		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken("user_and_admin", "spring")))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(3)));
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void should_allow_access_to_users_when_user_has_role_admin() throws Exception {
 		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken("admin", "spring")))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(3)));
+				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void should_not_allow_access_to_users_when_user_has_role_user() throws Exception {
+	public void should_allow_access_to_users_when_user_has_role_user() throws Exception {
 		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken("user", "spring")))
-				.andExpect(status().is(403));
+				.andExpect(status().isOk());
 	}
 
 }

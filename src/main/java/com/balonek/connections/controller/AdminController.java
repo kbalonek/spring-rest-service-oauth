@@ -18,24 +18,23 @@ package com.balonek.connections.controller;
 
 import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/admin")
+public class AdminController {
 
 	private final UserDao userDao;
 
 	@Autowired
-	public UserController(UserDao userDao) {
+	public AdminController(UserDao userDao) {
 		this.userDao = userDao;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public Iterable<User> getUsers() {
 		return userDao.getAllUsers();
 	}
