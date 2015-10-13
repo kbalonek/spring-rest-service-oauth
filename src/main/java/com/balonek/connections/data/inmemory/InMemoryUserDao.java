@@ -18,9 +18,6 @@ public class InMemoryUserDao implements UserDao {
 
     public InMemoryUserDao() {
         storage = new ConcurrentHashMap<String, User>();
-        storage.put(UserFixtures.USER_ID, UserFixtures.userWithUserRole());
-        storage.put(UserFixtures.ADMIN_ID, UserFixtures.userWithAdminRole());
-        storage.put(UserFixtures.USER_AND_ADMIN_ID, UserFixtures.userWithUserAndAdminRole());
     }
 
     @Override

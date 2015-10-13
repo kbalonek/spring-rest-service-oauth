@@ -16,6 +16,7 @@
 
 package com.balonek.connections;
 
+import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
@@ -47,23 +48,16 @@ public class UserControllerTest extends AbstractSecuredControllerTest {
     }
 
 	@Test
-	public void should_allow_access_to_users_when_user_has_roles_user_and_admin() throws Exception {
-		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken("user_and_admin", "spring")))
-				.andExpect(status().isOk());
-	}
-
-	@Test
 	public void should_allow_access_to_users_when_user_has_role_admin() throws Exception {
 		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken("admin", "spring")))
+				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.ADMIN_ID, "spring")))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void should_allow_access_to_users_when_user_has_role_user() throws Exception {
 		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken("user", "spring")))
+				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.USER_ID, "spring")))
 				.andExpect(status().isOk());
 	}
 }

@@ -1,5 +1,7 @@
 package com.balonek.connections;
 
+import com.balonek.connections.data.UserDao;
+import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -32,6 +34,9 @@ public abstract class AbstractSecuredControllerTest {
     @Autowired
     protected WebApplicationContext context;
 
+    @Autowired
+    private UserDao userDao;
+
     protected MockMvc mvc;
 
     @Autowired
@@ -43,6 +48,12 @@ public abstract class AbstractSecuredControllerTest {
         mvc = MockMvcBuilders.webAppContextSetup(context)
                 .addFilter(springSecurityFilterChain)
                 .build();
+        createTestUsers();
+    }
+
+    private void createTestUsers() {
+        userDao.createUser(UserFixtures.userWithUserRole());
+        userDao.createUser(UserFixtures.userWithAdminRole());
     }
 
     protected String getAccessToken(String username, String password) throws Exception {
