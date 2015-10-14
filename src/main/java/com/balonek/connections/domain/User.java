@@ -22,22 +22,30 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class User {
 
 	final private String userId;
 	final private String username;
 	final private String password;
 	final private Set<Roles> roles;
-
-	public User(String userId, String username, String password, Set<Roles> roles) {
-		this.userId = userId;
-		this.username = username;
-		this.password = password;
-		this.roles = roles;
-	}
+	final private Set<String> connectedUserIds;
 
     public User(User user) {
-        this(user.getUserId(), user.getUsername(), user.getPassword(), user.getRoles());
+        this.userId = user.getUserId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.roles = user.getRoles();
+        this.connectedUserIds = user.getConnectedUserIds();
+    }
+
+    private User(Builder builder) {
+        this.userId = builder.userId;
+        this.username = builder.username;
+        this.password = builder.password;
+        this.roles = builder.roles;
+        this.connectedUserIds = builder.connectedUserIds;
     }
 
     public String getUserId() {
@@ -55,6 +63,52 @@ public class User {
 	public Set<Roles> getRoles() {
 		return Collections.unmodifiableSet(roles);
 	}
+
+    public Set<String> getConnectedUserIds() {
+        return Collections.unmodifiableSet(connectedUserIds);
+    }
+
+    public static class Builder {
+
+        private String userId;
+        private String username;
+        private String password;
+        private Set<Roles> roles;
+        private Set<String> connectedUserIds;
+
+        public User build() {
+            checkNotNull(userId);
+            checkNotNull(username);
+            checkNotNull(password);
+            checkNotNull(roles);
+            checkNotNull(connectedUserIds);
+            return new User(this);
+        }
+        public Builder withUserId(String userId){
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder withUsername(String username){
+            this.username = username;
+            return this;
+        }
+
+        public Builder withPassword(String password){
+            this.password = password;
+            return this;
+        }
+
+        public Builder withRoles(Set<Roles> roles){
+            this.roles = roles;
+            return this;
+        }
+
+        public Builder withConnectedUserIds(Set<String> connectedUserIds){
+            this.connectedUserIds = connectedUserIds;
+            return this;
+        }
+    }
 
 	@Override
 	public boolean equals(Object o) {

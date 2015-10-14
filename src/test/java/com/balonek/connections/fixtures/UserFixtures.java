@@ -3,6 +3,7 @@ package com.balonek.connections.fixtures;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.security.Roles;
 
+import java.util.Collections;
 import java.util.EnumSet;
 
 /**
@@ -15,10 +16,22 @@ public class UserFixtures {
     public static final String TEST_PASSWORD = "spring";
 
     public static User userWithUserRole() {
-        return new User(USER_USERNAME, USER_USERNAME, TEST_PASSWORD, EnumSet.of(Roles.USER));
+        return new User.Builder()
+                .withUserId(USER_USERNAME)
+                .withUsername(USER_USERNAME)
+                .withPassword(TEST_PASSWORD)
+                .withRoles(EnumSet.of(Roles.USER))
+                .withConnectedUserIds(Collections.emptySet())
+                .build();
     }
 
     public static User userWithAdminRole() {
-        return new User(ADMIN_USERNAME, ADMIN_USERNAME, TEST_PASSWORD, EnumSet.of(Roles.ADMIN));
+        return new User.Builder()
+                .withUserId(ADMIN_USERNAME)
+                .withUsername(ADMIN_USERNAME)
+                .withPassword(TEST_PASSWORD)
+                .withRoles(EnumSet.of(Roles.ADMIN))
+                .withConnectedUserIds(Collections.emptySet())
+                .build();
     }
 }

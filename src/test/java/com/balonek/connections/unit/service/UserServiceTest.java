@@ -5,6 +5,7 @@ import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.exception.UserAlreadyExistsException;
 import com.balonek.connections.domain.exception.UserNotFoundException;
 import com.balonek.connections.domain.security.Roles;
+import com.balonek.connections.fixtures.UserFixtures;
 import com.balonek.connections.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.EnumSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class UserServiceTest {
     @InjectMocks
     private UserService underTest;
 
-    private User dummyUser = new User("", "", "", EnumSet.allOf(Roles.class));
+    private User dummyUser = UserFixtures.userWithUserRole();
 
     @Test
     public void should_find_user_by_user_id() throws Exception {

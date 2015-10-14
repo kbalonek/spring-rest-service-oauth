@@ -8,6 +8,7 @@ import com.balonek.connections.domain.security.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 
@@ -37,7 +38,13 @@ public class UserService {
         if (userDao.findByUsername(username).isPresent()) {
             throw new UserAlreadyExistsException("User already exists");
         }
-        User user = new User(username, username, password, EnumSet.of(Roles.USER));
+        User user = new User.Builder()
+                .withUserId(username)
+                .withUsername(username)
+                .withPassword(password)
+                .withRoles(EnumSet.of(Roles.USER))
+                .withConnectedUserIds(Collections.emptySet())
+                .build();
         return userDao.createUser(user);
     }
 

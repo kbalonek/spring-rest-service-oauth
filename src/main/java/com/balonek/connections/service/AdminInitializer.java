@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.EnumSet;
 
 /**
@@ -30,7 +31,13 @@ public class AdminInitializer {
 
     @PostConstruct
     public void createAdmin() {
-        User user = new User(ADMIN_USERNAME, ADMIN_USERNAME, ADMIN_PASSWORD, EnumSet.of(Roles.ADMIN));
+        User user = new User.Builder()
+                .withUserId(ADMIN_USERNAME)
+                .withUsername(ADMIN_USERNAME)
+                .withPassword(ADMIN_PASSWORD)
+                .withRoles(EnumSet.of(Roles.ADMIN))
+                .withConnectedUserIds(Collections.emptySet())
+                .build();
         try {
             userDao.createUser(user);
         } catch (IllegalStateException ex) {

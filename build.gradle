@@ -32,6 +32,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
 	compile("com.fasterxml.jackson.core:jackson-databind")
+	compile("com.google.guava:guava:12.0")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 	testCompile("com.jayway.jsonpath:json-path")
