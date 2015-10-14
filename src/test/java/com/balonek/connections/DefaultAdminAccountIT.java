@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Kris Balonek
  */
-public class DefaultAdminAccountTest extends AbstractSecuredControllerTest {
+public class DefaultAdminAccountIT extends AbstractSecuredIT {
 
 	public static final String DEFAULT_ADMIN_USERNAME = "admin";
 	public static final String DEFAULT_ADMIN_PASSWORD = "admin";

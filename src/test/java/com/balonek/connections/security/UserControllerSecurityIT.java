@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.balonek.connections;
+package com.balonek.connections.security;
 
-import com.balonek.connections.controller.AdminController;
+import com.balonek.connections.AbstractSecuredIT;
 import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.springframework.http.MediaType;
 
 import static org.hamcrest.Matchers.is;
@@ -30,14 +29,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Kris Balonek
  */
-public class AdminControllerTest extends AbstractSecuredControllerTest {
-
-	@InjectMocks
-	AdminController controller;
+public class UserControllerSecurityIT extends AbstractSecuredIT {
 
     @Test
     public void should_not_allow_access_to_users_when_not_authenticated() throws Exception {
-        mvc.perform(get("/admin/users")
+        mvc.perform(get("/users")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error", is("unauthorized")));
@@ -45,7 +41,7 @@ public class AdminControllerTest extends AbstractSecuredControllerTest {
 
     @Test
     public void should_not_allow_access_to_users_when_using_basic_authentication() throws Exception {
-        mvc.perform(get("/admin/users")
+        mvc.perform(get("/users")
                 .header("Authorization", getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
@@ -54,16 +50,15 @@ public class AdminControllerTest extends AbstractSecuredControllerTest {
 
 	@Test
 	public void should_allow_access_to_users_when_user_has_role_admin() throws Exception {
-		mvc.perform(get("/admin/users")
+		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.ADMIN_ID, "spring")))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void should_not_allow_access_to_users_when_user_has_role_user() throws Exception {
-		mvc.perform(get("/admin/users")
+	public void should_allow_access_to_users_when_user_has_role_user() throws Exception {
+		mvc.perform(get("/users")
 				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.USER_ID, "spring")))
-				.andExpect(status().isForbidden());
+				.andExpect(status().isOk());
 	}
-
 }

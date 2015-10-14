@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = Application.class)
-public abstract class AbstractSecuredControllerTest {
+public abstract class AbstractSecuredIT {
 
     public static final String CLIENT_ID = "clientapp";
     public static final String CLIENT_SECRET = "123456";

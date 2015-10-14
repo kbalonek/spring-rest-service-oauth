@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.balonek.connections;
+package com.balonek.connections.security;
 
+import com.balonek.connections.AbstractSecuredIT;
 import com.balonek.connections.controller.RegistrationController;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Kris Balonek
  */
-public class RegistrationControllerSecurityTest extends AbstractSecuredControllerTest {
+public class RegistrationControllerSecurityIT extends AbstractSecuredIT {
 
 	@InjectMocks
 	RegistrationController controller;
