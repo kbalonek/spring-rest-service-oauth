@@ -2,6 +2,7 @@ package com.balonek.connections.unit.service;
 
 import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
+import com.balonek.connections.domain.exception.UserAlreadyExistsException;
 import com.balonek.connections.domain.security.Roles;
 import com.balonek.connections.service.UserService;
 import org.junit.Test;
@@ -12,9 +13,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,6 +78,19 @@ public class UserServiceTest {
         User createdByService = argument.getValue();
         assertThat(createdByService.getUserId()).isEqualTo(username);
         assertThat(createdByService.getUsername()).isEqualTo(username);
+    }
+
+    @Test(expected = UserAlreadyExistsException.class)
+    public void should_throw_exception_if_user_already_exists(){
+        // given
+        String username = "username";
+        String password = "password";
+        when(userDao.findByLogin(eq(username))).thenReturn(Optional.of(dummyUser));
+
+        // when
+        underTest.createUser(username, password);
+
+        // then exception should be thrown
     }
 
 }
