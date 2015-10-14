@@ -16,33 +16,44 @@
 
 package com.balonek.connections.controller;
 
+import com.balonek.connections.controller.transport.ClientErrorDto;
 import com.balonek.connections.controller.transport.RegistrationRequestDto;
 import com.balonek.connections.controller.transport.UserDto;
 import com.balonek.connections.domain.User;
+import com.balonek.connections.domain.exception.UserAlreadyExistsException;
 import com.balonek.connections.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class RegistrationController {
 
-	private UserService userService;
+	private final UserService userService;
+    private final UserTransformer userTransformer;
 
-	@Autowired
-	public RegistrationController(UserService userService){
+    @Autowired
+	public RegistrationController(UserService userService, UserTransformer userTransformer){
 		this.userService = userService;
+        this.userTransformer = userTransformer;
+    }
+
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	public ResponseEntity<ClientErrorDto> handleUserAlreadyExistsException(HttpServletRequest req, Exception e) {
+		ClientErrorDto error = new ClientErrorDto(e.getMessage(), req.getRequestURI());
+		return new ResponseEntity<>(error, HttpStatus.CONFLICT);
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.CREATED)
 	public UserDto register(@RequestBody RegistrationRequestDto registrationRequestDto) {
 		// TODO encrypt the password
-		return toDto(userService.createUser(registrationRequestDto.getUsername(), registrationRequestDto.getPassword()));
+        User user = userService.createUser(
+                registrationRequestDto.getUsername(),
+                registrationRequestDto.getPassword());
+        return userTransformer.toDto(user);
 	}
-
-	private UserDto toDto(User user) {
-		return new UserDto(user.getUserId(), user.getUsername());
-	}
-
 }

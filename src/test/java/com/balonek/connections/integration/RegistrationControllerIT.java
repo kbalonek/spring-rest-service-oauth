@@ -18,6 +18,8 @@ package com.balonek.connections.integration;
 
 import com.balonek.connections.AbstractSecuredIT;
 import com.balonek.connections.controller.RegistrationController;
+import com.balonek.connections.domain.User;
+import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.springframework.http.MediaType;
@@ -26,9 +28,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Kris Balonek
@@ -48,5 +48,20 @@ public class RegistrationControllerIT extends AbstractSecuredIT {
                 .andExpect(jsonPath("$.username", is("create_user_test")))
                 .andExpect(jsonPath("$.userId", is("create_user_test")))
                 .andExpect(content().string(not(containsString("secret"))));
+    }
+
+    @Test
+    public void should_return_409_conflict_when_user_already_exists() throws Exception {
+        User existingUser = UserFixtures.userWithUserRole();
+        String requestBody = getRequestBodyForUsername(existingUser.getUsername());
+        mvc.perform(post("/register")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isConflict());
+    }
+
+    private String getRequestBodyForUsername(String username) {
+        return String.format("{\"username\":\"%s\", \"password\":\"secret\"}", username);
     }
 }

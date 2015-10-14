@@ -4,6 +4,7 @@ import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,9 +23,8 @@ public class InMemoryUserDao implements UserDao {
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public InMemoryUserDao() {
-
-        userByUsername = new HashMap<String, User>();
-        userById = new HashMap<String, User>();
+        userByUsername = new HashMap<>();
+        userById = new HashMap<>();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class InMemoryUserDao implements UserDao {
     }
 
     @Override
-    public Iterable<User> getAllUsers() {
+    public Collection<User> getAllUsers() {
         readWriteLock.readLock().lock();
         try {
             return userByUsername.values();

@@ -18,11 +18,12 @@ package com.balonek.connections.data;
 
 import com.balonek.connections.domain.User;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface UserDao {
 
 	Optional<User> findByUsername(String login);
-	Iterable<User> getAllUsers();
+	Collection<User> getAllUsers();
     User createUser(User user);
 }
