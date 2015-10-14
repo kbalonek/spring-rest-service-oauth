@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by kris on 10/14/15.
+ * Created by Kris Balonek
  */
 public class InMemoryUserDaoTest {
 
@@ -35,6 +35,24 @@ public class InMemoryUserDaoTest {
 
         // when
         Optional<User> optionalUser = underTest.findByUsername(username);
+
+        // then
+        assertThat(optionalUser.isPresent()).isTrue();
+        User user = optionalUser.get();
+        verifyUser(username, id, password, user);
+    }
+
+    @Test
+    public void should_find_user_by_user_id() throws Exception {
+        // given
+        String username = "username";
+        String id = "id";
+        EnumSet<Roles> roles = EnumSet.of(Roles.USER);
+        String password = "password";
+        underTest.createUser(new User(id, username, password, roles));
+
+        // when
+        Optional<User> optionalUser = underTest.findByUserId(id);
 
         // then
         assertThat(optionalUser.isPresent()).isTrue();

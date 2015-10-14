@@ -28,10 +28,20 @@ public class InMemoryUserDao implements UserDao {
     }
 
     @Override
-    public Optional<User> findByUsername(String login) {
+    public Optional<User> findByUsername(String username) {
         readWriteLock.readLock().lock();
         try {
-            return Optional.ofNullable(userByUsername.get(login));
+            return Optional.ofNullable(userByUsername.get(username));
+        } finally {
+            readWriteLock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public Optional<User> findByUserId(String userId) {
+        readWriteLock.readLock().lock();
+        try {
+            return Optional.ofNullable(userById.get(userId));
         } finally {
             readWriteLock.readLock().unlock();
         }

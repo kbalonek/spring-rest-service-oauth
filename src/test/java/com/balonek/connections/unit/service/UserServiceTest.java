@@ -3,6 +3,7 @@ package com.balonek.connections.unit.service;
 import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.exception.UserAlreadyExistsException;
+import com.balonek.connections.domain.exception.UserNotFoundException;
 import com.balonek.connections.domain.security.Roles;
 import com.balonek.connections.service.UserService;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by kris on 10/14/15.
+ * Created by Kris Balonek
  */
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -34,6 +35,31 @@ public class UserServiceTest {
     private UserService underTest;
 
     private User dummyUser = new User("", "", "", EnumSet.allOf(Roles.class));
+
+    @Test
+    public void should_find_user_by_user_id() throws Exception {
+        // given
+        String id = "userId";
+        when(userDao.findByUserId(eq(id))).thenReturn(Optional.of(dummyUser));
+
+        // when
+        User user = underTest.findUserByUserId(id);
+
+        // then
+        assertThat(user).isEqualTo(dummyUser);
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void should_throw_exception_if_user_doesnt_exist() throws Exception {
+        // given
+        String id = "userId";
+        when(userDao.findByUserId(eq(id))).thenReturn(Optional.empty());
+
+        // when
+        underTest.findUserByUserId(id);
+
+        // then exception should be thrown
+    }
 
     @Test
     public void should_create_new_user() throws Exception {
@@ -94,5 +120,6 @@ public class UserServiceTest {
 
         // then exception should be thrown
     }
+
 
 }

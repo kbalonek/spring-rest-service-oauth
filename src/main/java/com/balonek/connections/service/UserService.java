@@ -3,11 +3,13 @@ package com.balonek.connections.service;
 import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.exception.UserAlreadyExistsException;
+import com.balonek.connections.domain.exception.UserNotFoundException;
 import com.balonek.connections.domain.security.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 /**
  * @author Kris Balonek
@@ -37,5 +39,13 @@ public class UserService {
         }
         User user = new User(username, username, password, EnumSet.of(Roles.USER));
         return userDao.createUser(user);
+    }
+
+    public User findUserByUserId(String userId) {
+        Optional<User> optionalUser = userDao.findByUserId(userId);
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException("User not found");
+        }
+        return optionalUser.get();
     }
 }
