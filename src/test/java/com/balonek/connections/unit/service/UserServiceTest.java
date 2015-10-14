@@ -40,6 +40,7 @@ public class UserServiceTest {
         // given
         String username = "username";
         String password = "password";
+        when(userDao.findByUsername(eq(username))).thenReturn(Optional.<User>empty());
         when(userDao.createUser(any(User.class))).thenReturn(dummyUser);
 
         // when
@@ -66,6 +67,7 @@ public class UserServiceTest {
         // given
         String username = "username";
         String password = "password";
+        when(userDao.findByUsername(eq(username))).thenReturn(Optional.<User>empty());
         when(userDao.createUser(any(User.class))).thenReturn(dummyUser);
 
         // when
@@ -85,7 +87,7 @@ public class UserServiceTest {
         // given
         String username = "username";
         String password = "password";
-        when(userDao.findByLogin(eq(username))).thenReturn(Optional.of(dummyUser));
+        when(userDao.findByUsername(eq(username))).thenReturn(Optional.of(dummyUser));
 
         // when
         underTest.createUser(username, password);

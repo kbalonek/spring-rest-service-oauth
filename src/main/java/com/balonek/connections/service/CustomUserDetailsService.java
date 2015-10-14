@@ -16,18 +16,17 @@
 
 package com.balonek.connections.service;
 
-import java.util.Collection;
-import java.util.Optional;
-
 import com.balonek.connections.data.UserDao;
 import com.balonek.connections.domain.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -41,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> user = userDao.findByLogin(username);
+		Optional<User> user = userDao.findByUsername(username);
 		if (!user.isPresent()) {
 			throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
 		}

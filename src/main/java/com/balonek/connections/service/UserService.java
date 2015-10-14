@@ -32,8 +32,8 @@ public class UserService {
      *                                                                             in the storage.
      */
     public synchronized User createUser(String username, String password) {
-        if (userDao.findByLogin(username).isPresent()) {
-            throw new UserAlreadyExistsException("User '{}' already exists");
+        if (userDao.findByUsername(username).isPresent()) {
+            throw new UserAlreadyExistsException("User already exists");
         }
         User user = new User(username, username, password, EnumSet.of(Roles.USER));
         return userDao.createUser(user);

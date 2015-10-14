@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public interface UserDao {
 
-	Optional<User> findByLogin(String login);
+	Optional<User> findByUsername(String login);
 	Iterable<User> getAllUsers();
     User createUser(User user);
 }
