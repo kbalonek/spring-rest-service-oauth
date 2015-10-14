@@ -52,8 +52,8 @@ public abstract class AbstractSecuredIT {
     }
 
     private void createTestUsers() {
-        userDao.createUser(UserFixtures.userWithUserRole());
-        userDao.createUser(UserFixtures.userWithAdminRole());
+        userDao.saveUser(UserFixtures.userWithUserRole());
+        userDao.saveUser(UserFixtures.userWithAdminRole());
     }
 
     protected String getAdminAuthorizationHeader() throws Exception {

@@ -39,7 +39,7 @@ public class AdminInitializer {
                 .withConnectedUserIds(Collections.emptySet())
                 .build();
         try {
-            userDao.createUser(user);
+            userDao.saveUser(user);
         } catch (IllegalStateException ex) {
             logger.warn("Failed to create admin account", ex);
         }

@@ -42,7 +42,7 @@ public class InMemoryUserDaoTest {
     @Test
     public void should_find_user_by_username() throws Exception {
         // given
-        underTest.createUser(testUser);
+        underTest.saveUser(testUser);
 
         // when
         Optional<User> optionalUser = underTest.findByUsername(USERNAME);
@@ -56,7 +56,7 @@ public class InMemoryUserDaoTest {
     @Test
     public void should_find_user_by_user_id() throws Exception {
         // given
-        underTest.createUser(testUser);
+        underTest.saveUser(testUser);
 
         // when
         Optional<User> optionalUser = underTest.findByUserId(ID);

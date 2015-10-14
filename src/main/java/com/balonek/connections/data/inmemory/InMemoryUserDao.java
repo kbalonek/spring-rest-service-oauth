@@ -58,7 +58,7 @@ public class InMemoryUserDao implements UserDao {
     }
 
     @Override
-    public User createUser(User user) {
+    public User saveUser(User user) {
         readWriteLock.writeLock().lock();
         try {
             userByUsername.put(user.getUsername(), user);

@@ -67,7 +67,7 @@ public class UserServiceTest {
         String username = "username";
         String password = "password";
         when(userDao.findByUsername(eq(username))).thenReturn(Optional.<User>empty());
-        when(userDao.createUser(any(User.class))).thenReturn(dummyUser);
+        when(userDao.saveUser(any(User.class))).thenReturn(dummyUser);
 
         // when
         User user = underTest.createUser(username, password);
@@ -76,7 +76,7 @@ public class UserServiceTest {
         assertThat(user).isEqualTo(dummyUser);
 
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
-        verify(userDao).createUser(argument.capture());
+        verify(userDao).saveUser(argument.capture());
         User createdByService = argument.getValue();
         assertThat(createdByService.getUserId()).isEqualTo(username);
         assertThat(createdByService.getUsername()).isEqualTo(username);
@@ -94,7 +94,7 @@ public class UserServiceTest {
         String username = "username";
         String password = "password";
         when(userDao.findByUsername(eq(username))).thenReturn(Optional.<User>empty());
-        when(userDao.createUser(any(User.class))).thenReturn(dummyUser);
+        when(userDao.saveUser(any(User.class))).thenReturn(dummyUser);
 
         // when
         underTest.createUser(username, password);
@@ -102,7 +102,7 @@ public class UserServiceTest {
         // then
 
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
-        verify(userDao).createUser(argument.capture());
+        verify(userDao).saveUser(argument.capture());
         User createdByService = argument.getValue();
         assertThat(createdByService.getUserId()).isEqualTo(username);
         assertThat(createdByService.getUsername()).isEqualTo(username);

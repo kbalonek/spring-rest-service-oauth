@@ -45,7 +45,7 @@ public class UserService {
                 .withRoles(EnumSet.of(Roles.USER))
                 .withConnectedUserIds(Collections.emptySet())
                 .build();
-        return userDao.createUser(user);
+        return userDao.saveUser(user);
     }
 
     public User findUserByUserId(String userId) {

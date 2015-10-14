@@ -26,5 +26,5 @@ public interface UserDao {
 	Optional<User> findByUsername(String login);
 	Optional<User> findByUserId(String id);
 	Collection<User> getAllUsers();
-    User createUser(User user);
+    User saveUser(User user);
 }
