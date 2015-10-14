@@ -7,10 +7,7 @@ import com.balonek.connections.domain.security.Roles;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +20,9 @@ public class InMemoryUserDaoTest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final EnumSet<Roles> ROLES = EnumSet.of(Roles.USER);
-    public static final Set<String> CONNECTED_USER_IDS = Collections.emptySet();
+    public static final String CONNECTED_USER_ID = "other-users-id";
+    public static final Set<String> CONNECTED_USER_IDS = new HashSet<>(Arrays.asList(CONNECTED_USER_ID));
+
     private UserDao underTest;
     private User testUser;
 
@@ -82,5 +81,6 @@ public class InMemoryUserDaoTest {
         assertThat(user.getUsername()).isEqualTo(USERNAME);
         assertThat(user.getRoles()).isEqualTo(ROLES);
         assertThat(user.getPassword()).isEqualTo(PASSWORD);
+        assertThat(user.getConnectedUserIds()).containsOnly(CONNECTED_USER_ID);
     }
 }

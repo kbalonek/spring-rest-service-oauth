@@ -19,6 +19,7 @@ package com.balonek.connections.domain;
 import com.balonek.connections.domain.security.Roles;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -66,6 +67,18 @@ public class User {
 
     public Set<String> getConnectedUserIds() {
         return Collections.unmodifiableSet(connectedUserIds);
+    }
+
+    public User withAddedConnection(String otherUserId) {
+        Set<String> updatedConnectedUserIds = new HashSet<>(this.connectedUserIds);
+        updatedConnectedUserIds.add(otherUserId);
+        return new Builder()
+                .withUserId(this.userId)
+                .withUsername(this.username)
+                .withRoles(this.roles)
+                .withPassword(this.password)
+                .withConnectedUserIds(updatedConnectedUserIds)
+                .build();
     }
 
     public static class Builder {

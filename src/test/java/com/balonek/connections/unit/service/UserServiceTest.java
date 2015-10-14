@@ -14,13 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Kris Balonek
@@ -34,19 +34,20 @@ public class UserServiceTest {
     @InjectMocks
     private UserService underTest;
 
-    private User dummyUser = UserFixtures.userWithUserRole();
+    private User testUser = UserFixtures.userWithUserRole();
+    private User otherUser = UserFixtures.otherUserWithUserRole();
 
     @Test
     public void should_find_user_by_user_id() throws Exception {
         // given
         String id = "userId";
-        when(userDao.findByUserId(eq(id))).thenReturn(Optional.of(dummyUser));
+        when(userDao.findByUserId(eq(id))).thenReturn(Optional.of(testUser));
 
         // when
         User user = underTest.findUserByUserId(id);
 
         // then
-        assertThat(user).isEqualTo(dummyUser);
+        assertThat(user).isEqualTo(testUser);
     }
 
     @Test(expected = UserNotFoundException.class)
@@ -67,13 +68,13 @@ public class UserServiceTest {
         String username = "username";
         String password = "password";
         when(userDao.findByUsername(eq(username))).thenReturn(Optional.<User>empty());
-        when(userDao.saveUser(any(User.class))).thenReturn(dummyUser);
+        when(userDao.saveUser(any(User.class))).thenReturn(testUser);
 
         // when
         User user = underTest.createUser(username, password);
 
         // then
-        assertThat(user).isEqualTo(dummyUser);
+        assertThat(user).isEqualTo(testUser);
 
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
         verify(userDao).saveUser(argument.capture());
@@ -94,7 +95,7 @@ public class UserServiceTest {
         String username = "username";
         String password = "password";
         when(userDao.findByUsername(eq(username))).thenReturn(Optional.<User>empty());
-        when(userDao.saveUser(any(User.class))).thenReturn(dummyUser);
+        when(userDao.saveUser(any(User.class))).thenReturn(testUser);
 
         // when
         underTest.createUser(username, password);
@@ -113,7 +114,7 @@ public class UserServiceTest {
         // given
         String username = "username";
         String password = "password";
-        when(userDao.findByUsername(eq(username))).thenReturn(Optional.of(dummyUser));
+        when(userDao.findByUsername(eq(username))).thenReturn(Optional.of(testUser));
 
         // when
         underTest.createUser(username, password);
@@ -121,5 +122,63 @@ public class UserServiceTest {
         // then exception should be thrown
     }
 
+    @Test
+    public void should_add_connection() {
+        // given
+        when(userDao.findByUserId(eq(UserFixtures.USER_USERNAME))).thenReturn(Optional.of(testUser));
+        when(userDao.findByUserId(eq(UserFixtures.OTHER_USER_USERNAME))).thenReturn(Optional.of(otherUser));
+        when(userDao.saveUser(any(User.class))).thenAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            return args[0];
+        });
 
+        // when
+        User updatedUser = underTest.createConnection(testUser.getUserId(), otherUser.getUserId());
+
+        // then
+        assertThat(updatedUser.getUserId()).isEqualTo(testUser.getUserId());
+        assertThat(updatedUser.getUsername()).isEqualTo(testUser.getUsername());
+        assertThat(updatedUser.getRoles()).isEqualTo(testUser.getRoles());
+        assertThat(updatedUser.getPassword()).isEqualTo(testUser.getPassword());
+        assertThat(updatedUser.getConnectedUserIds()).containsOnly(otherUser.getUserId());
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userDao, times(2)).saveUser(userCaptor.capture());
+
+        List<User> capturedUsers = userCaptor.getAllValues();
+
+        User firstUser = capturedUsers.get(0);
+        User secondUser = capturedUsers.get(1);
+        assertUsersAreConnected(firstUser, secondUser);
+
+    }
+
+    private void assertUsersAreConnected(User firstUser, User secondUser) {
+        assertThat(firstUser.getConnectedUserIds()).containsOnly(secondUser.getUserId());
+        assertThat(secondUser.getConnectedUserIds()).containsOnly(firstUser.getUserId());
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void should_throw_exception_when_creating_connection_if_current_user_not_found() {
+        // given
+        when(userDao.findByUserId(eq(UserFixtures.USER_USERNAME))).thenReturn(Optional.empty());
+        when(userDao.findByUserId(eq(UserFixtures.OTHER_USER_USERNAME))).thenReturn(Optional.of(otherUser));
+
+        // when
+        underTest.createConnection(testUser.getUserId(), otherUser.getUserId());
+
+        // then exception should be thrown
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void should_throw_exception_when_creating_connection_if_connecting_user_not_found() {
+        // given
+        when(userDao.findByUserId(eq(UserFixtures.USER_USERNAME))).thenReturn(Optional.of(testUser));
+        when(userDao.findByUserId(eq(UserFixtures.OTHER_USER_USERNAME))).thenReturn(Optional.empty());
+
+        // when
+        underTest.createConnection(testUser.getUserId(), otherUser.getUserId());
+
+        // then exception should be thrown
+    }
 }

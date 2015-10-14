@@ -55,4 +55,20 @@ public class UserService {
         }
         return optionalUser.get();
     }
+
+    public synchronized User createConnection(String currentUserId, String otherUserId) {
+        Optional<User> optionalCurrentUser = userDao.findByUserId(currentUserId);
+        Optional<User> optionalOtherUser = userDao.findByUserId(otherUserId);
+        if (!optionalCurrentUser.isPresent()) {
+            throw new UserNotFoundException(String.format("User not found: %s", currentUserId));
+        }
+        if (!optionalOtherUser.isPresent()) {
+            throw new UserNotFoundException(String.format("User not found: %s", otherUserId));
+        }
+        User updatedCurrentUser = optionalCurrentUser.get().withAddedConnection(otherUserId);
+        User updatedOtherUser = optionalOtherUser.get().withAddedConnection(currentUserId);
+        userDao.saveUser(updatedCurrentUser);
+        userDao.saveUser(updatedOtherUser);
+        return updatedCurrentUser;
+    }
 }
