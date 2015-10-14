@@ -20,9 +20,11 @@ import com.balonek.connections.AbstractSecuredIT;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Test;
+import org.springframework.http.MediaType;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,5 +48,48 @@ public class UserControllerIT extends AbstractSecuredIT {
         mvc.perform(get("/users/{userId}", "no_such_user")
                 .header("Authorization", getUserAuthorizationHeader()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void should_connect_users() throws Exception {
+        User existingUser = UserFixtures.userWithUserRole();
+        User otherUser = UserFixtures.otherUserWithUserRole();
+        String requestBody = String.format("{\"userId\": \"%s\"}", otherUser.getUserId());
+
+        mvc.perform(post("/users/{userId}/connections", existingUser.getUserId())
+                .header("Authorization", getUserAuthorizationHeader())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username", is(existingUser.getUsername())))
+                .andExpect(jsonPath("$.userId", is(existingUser.getUserId())));
+    }
+
+
+    @Test
+    public void should_return_404_when_connecting_not_existing_user() throws Exception {
+        User existingUser = UserFixtures.userWithUserRole();
+        String requestBody = "{\"userId\": \"no_such_user\"}";
+
+        mvc.perform(post("/users/{userId}/connections", existingUser.getUserId())
+                .header("Authorization", getUserAuthorizationHeader())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void should_not_allow_updating_other_users_connections() throws Exception {
+        User existingUser = UserFixtures.otherUserWithUserRole();
+        String requestBody = "{\"userId\": \"dummy\"}";
+
+        mvc.perform(post("/users/{userId}/connections", existingUser.getUserId())
+                .header("Authorization", getUserAuthorizationHeader())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isForbidden());
     }
 }

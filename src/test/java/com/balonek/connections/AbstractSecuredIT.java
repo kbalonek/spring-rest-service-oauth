@@ -1,6 +1,7 @@
 package com.balonek.connections;
 
 import com.balonek.connections.data.UserDao;
+import com.balonek.connections.domain.User;
 import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -53,15 +54,18 @@ public abstract class AbstractSecuredIT {
 
     private void createTestUsers() {
         userDao.saveUser(UserFixtures.userWithUserRole());
+        userDao.saveUser(UserFixtures.otherUserWithUserRole());
         userDao.saveUser(UserFixtures.userWithAdminRole());
     }
 
     protected String getAdminAuthorizationHeader() throws Exception {
-        return "Bearer " + getAccessToken(UserFixtures.ADMIN_USERNAME, UserFixtures.TEST_PASSWORD);
+        User admin = UserFixtures.userWithAdminRole();
+        return "Bearer " + getAccessToken(admin.getUsername(), admin.getPassword());
     }
 
     protected String getUserAuthorizationHeader() throws Exception {
-        return "Bearer " + getAccessToken(UserFixtures.USER_USERNAME, UserFixtures.TEST_PASSWORD);
+        User user = UserFixtures.userWithUserRole();
+        return "Bearer " + getAccessToken(user.getUsername(), user.getPassword());
     }
 
     private String getAccessToken(String username, String password) throws Exception {

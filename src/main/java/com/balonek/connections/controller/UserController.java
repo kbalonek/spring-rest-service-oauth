@@ -17,12 +17,16 @@
 package com.balonek.connections.controller;
 
 import com.balonek.connections.controller.transport.ClientErrorDto;
+import com.balonek.connections.controller.transport.ConnectionRequestDto;
 import com.balonek.connections.controller.transport.UserDto;
+import com.balonek.connections.domain.User;
+import com.balonek.connections.domain.exception.AuthorizationException;
 import com.balonek.connections.domain.exception.UserNotFoundException;
 import com.balonek.connections.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,8 +50,28 @@ public class UserController {
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ClientErrorDto> handleAuthorizationException(HttpServletRequest req, Exception e) {
+        ClientErrorDto error = new ClientErrorDto(e.getMessage(), req.getRequestURI());
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
 	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
 	public UserDto getUsers(@PathVariable String userId) {
 		return userTransformer.toDto(userService.findUserByUserId(userId));
 	}
+
+    @RequestMapping(value = "/{userId}/connections", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto connectUsers(
+            @PathVariable String userId,
+            @RequestBody ConnectionRequestDto connectionRequestDto,
+            @AuthenticationPrincipal User authenticatedUser) {
+        if (!userId.equals(authenticatedUser.getUserId())){
+            throw new AuthorizationException("Connection can be created only for the authenticated user.");
+        }
+        User updatedUser = userService.createConnection(authenticatedUser.getUserId(), connectionRequestDto.getUserId());
+        return userTransformer.toDto(updatedUser);
+    }
 }
