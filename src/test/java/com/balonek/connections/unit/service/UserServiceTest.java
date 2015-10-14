@@ -30,12 +30,13 @@ public class UserServiceTest {
     @InjectMocks
     private UserService underTest;
 
+    private User dummyUser = new User("", "", "", EnumSet.allOf(Roles.class));
+
     @Test
     public void should_create_new_user() throws Exception {
         // given
         String username = "username";
         String password = "password";
-        User dummyUser = new User("", "", "", EnumSet.allOf(Roles.class));
         when(userDao.createUser(any(User.class))).thenReturn(dummyUser);
 
         // when
@@ -51,4 +52,29 @@ public class UserServiceTest {
         assertThat(createdByService.getUsername()).isEqualTo(username);
         assertThat(createdByService.getRoles()).containsOnly(Roles.USER);
     }
+
+
+    /**
+     * Current strategy for creating ids needs to be
+     * explicitly specified in test so no one changes it accidentally.
+     */
+    @Test
+    public void should_use_username_as_user_id() throws Exception {
+        // given
+        String username = "username";
+        String password = "password";
+        when(userDao.createUser(any(User.class))).thenReturn(dummyUser);
+
+        // when
+        underTest.createUser(username, password);
+
+        // then
+
+        ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
+        verify(userDao).createUser(argument.capture());
+        User createdByService = argument.getValue();
+        assertThat(createdByService.getUserId()).isEqualTo(username);
+        assertThat(createdByService.getUsername()).isEqualTo(username);
+    }
+
 }
