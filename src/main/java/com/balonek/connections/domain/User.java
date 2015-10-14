@@ -16,10 +16,11 @@
 
 package com.balonek.connections.domain;
 
-import java.util.Collections;
-import java.util.Set;
-
 import com.balonek.connections.domain.security.Roles;
+
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
 
 public class User {
 
@@ -53,5 +54,21 @@ public class User {
 
 	public Set<Roles> getRoles() {
 		return Collections.unmodifiableSet(roles);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return Objects.equals(userId, user.userId) &&
+				Objects.equals(username, user.username) &&
+				Objects.equals(password, user.password) &&
+				Objects.equals(roles, user.roles);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userId, username, password, roles);
 	}
 }
