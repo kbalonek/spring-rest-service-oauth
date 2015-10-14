@@ -10,14 +10,15 @@ import java.util.EnumSet;
  */
 public class UserFixtures {
 
-    public static final String USER_ID = "test_user";
-    public static final String ADMIN_ID = "test_admin";
+    public static final String USER_USERNAME = "test_user";
+    public static final String ADMIN_USERNAME = "test_admin";
+    public static final String TEST_PASSWORD = "spring";
 
     public static User userWithUserRole() {
-        return new User(USER_ID, USER_ID, "spring", EnumSet.of(Roles.USER));
+        return new User(USER_USERNAME, USER_USERNAME, TEST_PASSWORD, EnumSet.of(Roles.USER));
     }
 
     public static User userWithAdminRole() {
-        return new User(ADMIN_ID, ADMIN_ID, "spring", EnumSet.of(Roles.ADMIN));
+        return new User(ADMIN_USERNAME, ADMIN_USERNAME, TEST_PASSWORD, EnumSet.of(Roles.ADMIN));
     }
 }

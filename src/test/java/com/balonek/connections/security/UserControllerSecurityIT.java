@@ -31,9 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class UserControllerSecurityIT extends AbstractSecuredIT {
 
+    private static final String USER_DETAILS_ENDPOINT = "/users/" + UserFixtures.userWithUserRole().getUserId();
     @Test
     public void should_not_allow_access_to_users_when_not_authenticated() throws Exception {
-        mvc.perform(get("/users")
+        mvc.perform(get(USER_DETAILS_ENDPOINT)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error", is("unauthorized")));
@@ -41,7 +42,7 @@ public class UserControllerSecurityIT extends AbstractSecuredIT {
 
     @Test
     public void should_not_allow_access_to_users_when_using_basic_authentication() throws Exception {
-        mvc.perform(get("/users")
+        mvc.perform(get(USER_DETAILS_ENDPOINT)
                 .header("Authorization", getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
@@ -50,15 +51,15 @@ public class UserControllerSecurityIT extends AbstractSecuredIT {
 
 	@Test
 	public void should_allow_access_to_users_when_user_has_role_admin() throws Exception {
-		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.ADMIN_ID, "spring")))
-				.andExpect(status().isOk());
+        mvc.perform(get(USER_DETAILS_ENDPOINT)
+				.header("Authorization", getAdminAuthorizationHeader()))
+                .andExpect(status().isOk());
 	}
 
 	@Test
 	public void should_allow_access_to_users_when_user_has_role_user() throws Exception {
-		mvc.perform(get("/users")
-				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.USER_ID, "spring")))
+        mvc.perform(get(USER_DETAILS_ENDPOINT)
+				.header("Authorization", getUserAuthorizationHeader()))
 				.andExpect(status().isOk());
 	}
 }

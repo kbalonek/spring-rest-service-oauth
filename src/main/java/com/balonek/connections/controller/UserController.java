@@ -16,30 +16,38 @@
 
 package com.balonek.connections.controller;
 
+import com.balonek.connections.controller.transport.ClientErrorDto;
 import com.balonek.connections.controller.transport.UserDto;
-import com.balonek.connections.data.UserDao;
+import com.balonek.connections.domain.exception.UserNotFoundException;
+import com.balonek.connections.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
 	private final UserTransformer userTransformer;
-	private final UserDao userDao;
+	private UserService userService;
 
 	@Autowired
-	public UserController(UserTransformer userTransformer, UserDao userDao) {
+	public UserController(UserTransformer userTransformer, UserService userService) {
 		this.userTransformer = userTransformer;
-		this.userDao = userDao;
+		this.userService = userService;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public Collection<UserDto> getUsers() {
-		return userTransformer.toDto(userDao.getAllUsers());
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<ClientErrorDto> handleUserNotFoundException(HttpServletRequest req, Exception e) {
+		ClientErrorDto error = new ClientErrorDto(e.getMessage(), req.getRequestURI());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+
+	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+	public UserDto getUsers(@PathVariable String userId) {
+		return userTransformer.toDto(userService.findUserByUserId(userId));
 	}
 }

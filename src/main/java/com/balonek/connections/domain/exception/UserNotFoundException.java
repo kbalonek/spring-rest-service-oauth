@@ -1,7 +1,7 @@
 package com.balonek.connections.domain.exception;
 
 /**
- * Created by Kris Balonek
+ * @author Kris Balonek
  */
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

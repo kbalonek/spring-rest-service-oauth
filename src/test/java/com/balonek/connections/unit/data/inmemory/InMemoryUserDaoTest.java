@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by Kris Balonek
+ * @author Kris Balonek
  */
 public class InMemoryUserDaoTest {
 

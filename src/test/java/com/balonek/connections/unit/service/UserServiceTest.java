@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by Kris Balonek
+ * @author Kris Balonek
  */
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {

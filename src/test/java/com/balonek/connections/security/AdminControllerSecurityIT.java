@@ -18,7 +18,6 @@ package com.balonek.connections.security;
 
 import com.balonek.connections.AbstractSecuredIT;
 import com.balonek.connections.controller.AdminController;
-import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.springframework.http.MediaType;
@@ -56,14 +55,14 @@ public class AdminControllerSecurityIT extends AbstractSecuredIT {
 	@Test
 	public void should_allow_access_to_users_when_user_has_role_admin() throws Exception {
 		mvc.perform(get("/admin/users")
-				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.ADMIN_ID, "spring")))
+				.header("Authorization", getAdminAuthorizationHeader()))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void should_not_allow_access_to_users_when_user_has_role_user() throws Exception {
 		mvc.perform(get("/admin/users")
-				.header("Authorization", "Bearer " + getAccessToken(UserFixtures.USER_ID, "spring")))
+				.header("Authorization", getUserAuthorizationHeader()))
 				.andExpect(status().isForbidden());
 	}
 

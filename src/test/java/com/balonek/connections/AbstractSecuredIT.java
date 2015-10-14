@@ -56,7 +56,15 @@ public abstract class AbstractSecuredIT {
         userDao.createUser(UserFixtures.userWithAdminRole());
     }
 
-    protected String getAccessToken(String username, String password) throws Exception {
+    protected String getAdminAuthorizationHeader() throws Exception {
+        return "Bearer " + getAccessToken(UserFixtures.ADMIN_USERNAME, UserFixtures.TEST_PASSWORD);
+    }
+
+    protected String getUserAuthorizationHeader() throws Exception {
+        return "Bearer " + getAccessToken(UserFixtures.USER_USERNAME, UserFixtures.TEST_PASSWORD);
+    }
+
+    private String getAccessToken(String username, String password) throws Exception {
         String authorization = getBasicAuthorizationHeader(CLIENT_ID, CLIENT_SECRET);
         String contentType = MediaType.APPLICATION_JSON + ";charset=UTF-8";
 

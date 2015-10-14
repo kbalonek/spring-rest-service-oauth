@@ -28,12 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DefaultAdminAccountIT extends AbstractSecuredIT {
 
 	public static final String DEFAULT_ADMIN_USERNAME = "admin";
-	public static final String DEFAULT_ADMIN_PASSWORD = "admin";
 
 	@Test
 	public void should_create_admin_account_on_startup() throws Exception {
 		mvc.perform(get("/admin/users")
-                .header("Authorization", "Bearer " + getAccessToken(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD)))
+                .header("Authorization", getAdminAuthorizationHeader()))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.[?(@username == '%s')]", DEFAULT_ADMIN_USERNAME).exists());
 	}
