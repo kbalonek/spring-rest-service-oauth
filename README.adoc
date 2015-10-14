@@ -10,69 +10,79 @@ The sample uses http://oauthlib.readthedocs.org/en/latest/oauth2/grants/password
 == Create user
 
 Role: none
-
+```
 POST /users/
 
 {
    "username": "abc",
    "password": "1234"
 }
-
+```
 response:
-
+```
 201 CREATED
 
 {
    "userId": "abc",
    "username": "abc"
 }
-
+```
 == Get user details
 
 Role: USER
+```
 GET /users/{userId}
-
+```
 response:
-
+```
 200 OK
 
 {
    "userId": "abc",
    "username": "abc"
 }
-
+```
 == Add a friend
 
 Role: USER
-POST /users/{userId}/friends/{friendId}
+```
+POST /users/{userId}/friends
 
+{
+   "userId": "xyz"
+}
+```
 response:
-
+```
 201 CREATED
 
 {
-   "userId": "abc"
-   "friendId": "xyz"
+   "userId": "abc",
+   "username": "abc",
+   "friends": [
+      "xyz"
+   ]
 }
-
+```
 == Get user's friends
 
 Role: ADMIN
+```
 GET /admin/users/{userId}
-
+```
+response:
+```
 200 OK
 
 {
    "userId": "abc",
    "username": "abc"
    "friends": [
-       {
-          "userId": "xyz",
-          "username": "xyz"
-       }
+      "xyz",
+      "pqr"
    ]
 }
-
+```
 = Original documentation
 
 image::https://travis-ci.org/royclarkson/spring-rest-service-oauth.svg[Build Status, link=https://travis-ci.org/royclarkson/spring-rest-service-oauth/]
