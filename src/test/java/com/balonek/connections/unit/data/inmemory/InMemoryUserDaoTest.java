@@ -1,6 +1,7 @@
-package com.balonek.connections.data.inmemory;
+package com.balonek.connections.unit.data.inmemory;
 
 import com.balonek.connections.data.UserDao;
+import com.balonek.connections.data.inmemory.InMemoryUserDao;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.security.Roles;
 import org.junit.Before;
