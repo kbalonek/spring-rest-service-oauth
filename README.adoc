@@ -58,16 +58,17 @@ Expected response:
 {"access_token":"<your-token>","token_type":"bearer","refresh_token":"6783d235-2e66-4bf9-a79c-87c8d401e000","expires_in":43199,"scope":"read write"}
 ```
 
-d. As userA, search for userB:
+d. As userA, search for all users whose names contain string "user"
 +
 ```
-curl -H "Accept: application/json" -H "Authorization: Bearer <your-token>" http://localhost:8080/users/userB
+curl -H "Accept: application/json" -H "Authorization: Bearer <your-token>" http://localhost:8080/users?nameContains=user
 ```
 +
 Expected response:
 +
 ```
-{"userId":"userB","username":"userB"}
+[{"userId":"userB","username":"userB"},
+ {"userId":"userA","username":"userA"}]
 ```
 
 e. As userA, connect with userB:

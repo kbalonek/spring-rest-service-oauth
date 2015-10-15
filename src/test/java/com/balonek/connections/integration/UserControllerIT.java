@@ -22,6 +22,7 @@ import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,6 +42,17 @@ public class UserControllerIT extends AbstractSecuredIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username", is(existingUser.getUsername())))
                 .andExpect(jsonPath("$.userId", is(existingUser.getUserId())));
+    }
+
+    @Test
+    public void should_search_for_users_by_username_substring() throws Exception {
+        User admin = UserFixtures.userWithAdminRole();
+        mvc.perform(get("/users")
+                .param("nameContains", "admin")
+                .header("Authorization", getUserAuthorizationHeader()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].userId", hasItem(admin.getUserId())))
+                .andExpect(jsonPath("$[*].connections").doesNotExist());
     }
 
     @Test

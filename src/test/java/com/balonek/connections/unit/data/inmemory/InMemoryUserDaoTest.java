@@ -85,7 +85,6 @@ public class InMemoryUserDaoTest {
         assertThat(user.getConnectedUserIds()).containsOnly(CONNECTED_USER_ID);
     }
 
-
     @Test
     public void should_find_all_users_with_matching_username() {
         // given
@@ -101,5 +100,20 @@ public class InMemoryUserDaoTest {
 
         // then
         assertThat(matchingUsers).containsOnly(userWithMatchingName1, userWithMatchingName2);
+    }
+
+    @Test
+    public void should_return_all_users_when_search_pattern_is_empty() {
+        // given
+        User user1 = UserFixtures.createUserWithName("user1");
+        User user2 = UserFixtures.createUserWithName("user2");
+        underTest.saveUser(user1);
+        underTest.saveUser(user2);
+
+        // when
+        Collection<User> matchingUsers = underTest.searchUsers("");
+
+        // then
+        assertThat(matchingUsers).containsOnly(user1, user2);
     }
 }

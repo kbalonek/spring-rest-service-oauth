@@ -76,4 +76,11 @@ public class UserService {
     public Collection<User> getAllUsers() {
         return userDao.getAllUsers();
     }
+
+    /**
+     * Returns all users with usernames containing the pattern. Returns all the users if pattern is an empty string.
+     */
+    public Collection<User> searchUsers(String pattern) {
+        return userDao.searchUsers(pattern);
+    }
 }

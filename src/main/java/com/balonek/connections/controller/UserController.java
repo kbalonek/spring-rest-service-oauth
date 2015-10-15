@@ -32,13 +32,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-	private final UserTransformer userTransformer;
-	private UserService userService;
+    public static final String SHOW_ALL = "";
+
+    private final UserTransformer userTransformer;
+	private final UserService userService;
 
 	@Autowired
 	public UserController(UserTransformer userTransformer, UserService userService) {
@@ -59,10 +62,15 @@ public class UserController {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
-	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-	public UserDto getUsers(@PathVariable String userId) {
-		return userTransformer.toDto(userService.findUserByUserId(userId));
-	}
+	@RequestMapping(method = RequestMethod.GET)
+	public Collection<UserDto> searchUsers(@RequestParam(value="nameContains", defaultValue=SHOW_ALL) String pattern) {
+        return userTransformer.toDto(userService.searchUsers(pattern));
+    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public UserDto getUsers(@PathVariable String userId) {
+        return userTransformer.toDto(userService.findUserByUserId(userId));
+    }
 
     @RequestMapping(value = "/{userId}/connections", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)

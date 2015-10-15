@@ -26,6 +26,9 @@ public interface UserDao {
 	Optional<User> findByUsername(String login);
 	Optional<User> findByUserId(String id);
 	Collection<User> getAllUsers();
+    /**
+     * Returns all users with usernames containing the pattern. Returns all the users if pattern is an empty string.
+     */
     Collection<User> searchUsers(String containing);
     User saveUser(User user);
 }
