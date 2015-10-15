@@ -63,7 +63,8 @@ public class UserControllerIT extends AbstractSecuredIT {
                 .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username", is(existingUser.getUsername())))
-                .andExpect(jsonPath("$.userId", is(existingUser.getUserId())));
+                .andExpect(jsonPath("$.userId", is(existingUser.getUserId())))
+                .andExpect(jsonPath("$.connections[0]", is(otherUser.getUserId())));
     }
 
 

@@ -46,7 +46,7 @@ response:
 
 Role: USER
 ```
-POST /users/{userId}/friends
+POST /users/{userId}/connections
 
 {
    "userId": "xyz"
@@ -59,7 +59,7 @@ response:
 {
    "userId": "abc",
    "username": "abc",
-   "friends": [
+   "connections": [
       "xyz"
    ]
 }
@@ -77,7 +77,7 @@ response:
 {
    "userId": "abc",
    "username": "abc"
-   "friends": [
+   "connections": [
       "xyz",
       "pqr"
    ]

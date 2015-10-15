@@ -19,6 +19,7 @@ package com.balonek.connections.controller;
 import com.balonek.connections.controller.transport.ClientErrorDto;
 import com.balonek.connections.controller.transport.ConnectionRequestDto;
 import com.balonek.connections.controller.transport.UserDto;
+import com.balonek.connections.controller.transport.UserWithConnectionsDto;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.exception.AuthorizationException;
 import com.balonek.connections.domain.exception.UserNotFoundException;
@@ -64,7 +65,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}/connections", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto connectUsers(
+    public UserWithConnectionsDto connectUsers(
             @PathVariable String userId,
             @RequestBody ConnectionRequestDto connectionRequestDto,
             @AuthenticationPrincipal User authenticatedUser) {
@@ -72,6 +73,6 @@ public class UserController {
             throw new AuthorizationException("Connection can be created only for the authenticated user.");
         }
         User updatedUser = userService.createConnection(authenticatedUser.getUserId(), connectionRequestDto.getUserId());
-        return userTransformer.toDto(updatedUser);
+        return userTransformer.toUserWithConnectionsDto(updatedUser);
     }
 }
