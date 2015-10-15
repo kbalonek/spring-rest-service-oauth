@@ -45,4 +45,15 @@ public class UserFixtures {
                 .withConnectedUserIds(Collections.emptySet())
                 .build();
     }
+
+
+    public static User createUserWithName(String name) {
+        return  new User.Builder()
+                .withUserId("id-"+name)
+                .withUsername(name)
+                .withPassword(TEST_PASSWORD)
+                .withRoles(EnumSet.of(Roles.USER))
+                .withConnectedUserIds(Collections.emptySet())
+                .build();
+    }
 }

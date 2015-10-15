@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * @author Kris Balonek
@@ -52,6 +53,18 @@ public class InMemoryUserDao implements UserDao {
         readWriteLock.readLock().lock();
         try {
             return userByUsername.values();
+        } finally {
+            readWriteLock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public Collection<User> searchUsers(String containing) {
+        readWriteLock.readLock().lock();
+        try {
+            return userByUsername.values().stream()
+                    .filter(user -> user.getUsername().contains(containing))
+                    .collect(Collectors.toSet());
         } finally {
             readWriteLock.readLock().unlock();
         }

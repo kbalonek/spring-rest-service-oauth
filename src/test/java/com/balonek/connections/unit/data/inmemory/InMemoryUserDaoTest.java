@@ -4,6 +4,7 @@ import com.balonek.connections.data.UserDao;
 import com.balonek.connections.data.inmemory.InMemoryUserDao;
 import com.balonek.connections.domain.User;
 import com.balonek.connections.domain.security.Roles;
+import com.balonek.connections.fixtures.UserFixtures;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,5 +83,23 @@ public class InMemoryUserDaoTest {
         assertThat(user.getRoles()).isEqualTo(ROLES);
         assertThat(user.getPassword()).isEqualTo(PASSWORD);
         assertThat(user.getConnectedUserIds()).containsOnly(CONNECTED_USER_ID);
+    }
+
+
+    @Test
+    public void should_find_all_users_with_matching_username() {
+        // given
+        User userWithMatchingName1 = UserFixtures.createUserWithName("containing_substring_1");
+        User userWithMatchingName2 = UserFixtures.createUserWithName("containing_substring_2");
+        User userWithoutMatchingName = UserFixtures.createUserWithName("other");
+        underTest.saveUser(userWithMatchingName1);
+        underTest.saveUser(userWithMatchingName2);
+        underTest.saveUser(userWithoutMatchingName);
+
+        // when
+        Collection<User> matchingUsers = underTest.searchUsers("substring");
+
+        // then
+        assertThat(matchingUsers).containsOnly(userWithMatchingName1, userWithMatchingName2);
     }
 }
