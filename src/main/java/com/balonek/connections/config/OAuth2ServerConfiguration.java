@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -54,10 +55,12 @@ public class OAuth2ServerConfiguration {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
 			http
+				.csrf().disable()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
 				.authorizeRequests()
 					.antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/users").hasAnyRole("USER", "ADMIN")
-					.antMatchers("/greeting").authenticated()
+                    .antMatchers("/users/**").hasAnyRole("USER", "ADMIN")
                     .antMatchers("/register").permitAll()
                     .anyRequest().authenticated();
 		}

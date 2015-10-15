@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
- * Created by kris on 10/14/15.
+ * @author Kris Balonek
  */
 @Component
 public class UserTransformer {
@@ -27,5 +27,9 @@ public class UserTransformer {
                 user.getUserId(),
                 user.getUsername(),
                 user.getConnectedUserIds());
+    }
+
+    public Collection<UserWithConnectionsDto> toUserWithConnectionsDto(Collection<User> users) {
+        return users.stream().map(this::toUserWithConnectionsDto).collect(Collectors.toList());
     }
 }

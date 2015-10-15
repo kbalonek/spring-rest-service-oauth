@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 public class RegistrationController {
@@ -49,7 +50,7 @@ public class RegistrationController {
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST )
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDto register(@RequestBody RegistrationRequestDto registrationRequestDto) {
+	public UserDto register(@Valid @RequestBody RegistrationRequestDto registrationRequestDto) {
 		// TODO encrypt the password
         User user = userService.createUser(
                 registrationRequestDto.getUsername(),

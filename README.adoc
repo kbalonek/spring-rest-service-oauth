@@ -5,6 +5,82 @@ The sample uses http://oauthlib.readthedocs.org/en/latest/oauth2/grants/password
 2. The user gives the client app the user's login and password.
 3. The client exchanges the user's credentials for a token that gives it the access to the user's resources.
 
+= Running and testing
+
+1. Start application:
+```
+./gradlew clean build bootRun
+```
+2. Test user endpoints:
+a) Register userA:
+```
+curl -X POST -H "Content-Type: application/json" http://localhost:8080/register -d \
+'{"username":"userA","password":"secret"}'
+```
+Expected response:
+```
+{"userId":"userA","username":"userA"}
+```
+
+b) Register userB:
+```
+curl -X POST -H "Content-Type: application/json" http://localhost:8080/register -d \
+'{"username":"userB","password":"secret"}'
+```
+Expected response:
+```
+{"userId":"userB","username":"userB"}
+```
+
+c) Obtain userA's token:
+```
+curl -X POST -vu clientapp:123456 http://localhost:8080/oauth/token -H "Accept: application/json" -d \
+"password=secret&username=userA&scope=read%20write&grant_type=password&client_secret=123456&client_id=clientapp"
+```
+
+Expected response:
+```
+{"access_token":"e9d90400-b0a0-463b-99b1-8c30cc031638","token_type":"bearer","refresh_token":"6783d235-2e66-4bf9-a79c-87c8d401e000","expires_in":43199,"scope":"read write"}
+```
+
+d) As userA, search for userB:
+```
+curl -H "Accept: application/json" -H "Authorization: Bearer e9d90400-b0a0-463b-99b1-8c30cc031638" http://localhost:8080/users/userB
+```
+Expected response:
+```
+{"userId":"userB","username":"userB"}
+```
+
+e) As userA, connect with userB:
+```
+curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer e9d90400-b0a0-463b-99b1-8c30cc031638" http://localhost:8080/users/userA/connections -d '{"userId": "userB"}'
+```
+Expected response:
+```
+{"userId":"userA","username":"userA","connections":["userB"]}
+```
+
+3. Test admin endpoints:
+a) Obtain admin token (the application creates a default admin account):
+```
+curl -X POST -vu clientapp:123456 http://localhost:8080/oauth/token -H "Accept: application/json" -d \
+"password=admin&username=admin&scope=read%20write&grant_type=password&client_secret=123456&client_id=clientapp"
+```
+Expected response:
+```
+{"access_token":"8ab16024-41a7-4e22-81db-2e9859183b8c","token_type":"bearer","refresh_token":"247e1719-b053-4129-bb22-27124c4fc035","expires_in":42639,"scope":"read write"}
+```
+b) List all the users with their connections:
+```
+curl -H "Accept: application/json" -H "Authorization: Bearer 8ab16024-41a7-4e22-81db-2e9859183b8c" http://localhost:8080/admin/users
+```
+Expected response:
+```
+[{"userId":"userA","username":"userA","connections":["userB"]},
+ {"userId":"userB","username":"userB","connections":["userA"]},
+ {"userId":"admin","username":"admin","connections":[]}]
+```
 = API
 
 == Create user

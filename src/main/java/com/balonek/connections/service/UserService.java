@@ -8,6 +8,7 @@ import com.balonek.connections.domain.security.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
@@ -70,5 +71,9 @@ public class UserService {
         userDao.saveUser(updatedCurrentUser);
         userDao.saveUser(updatedOtherUser);
         return updatedCurrentUser;
+    }
+
+    public Collection<User> getAllUsers() {
+        return userDao.getAllUsers();
     }
 }

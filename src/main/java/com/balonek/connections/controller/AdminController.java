@@ -16,8 +16,8 @@
 
 package com.balonek.connections.controller;
 
-import com.balonek.connections.controller.transport.UserDto;
-import com.balonek.connections.data.UserDao;
+import com.balonek.connections.controller.transport.UserWithConnectionsDto;
+import com.balonek.connections.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,16 +30,16 @@ import java.util.Collection;
 public class AdminController {
 
 	private final UserTransformer userTransformer;
-	private final UserDao userDao;
+	private UserService userService;
 
 	@Autowired
-	public AdminController(UserTransformer userTransformer, UserDao userDao) {
+	public AdminController(UserTransformer userTransformer, UserService userService) {
 		this.userTransformer = userTransformer;
-		this.userDao = userDao;
+		this.userService = userService;
 	}
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public Collection<UserDto> getUsers() {
-		return userTransformer.toDto(userDao.getAllUsers());
+	public Collection<UserWithConnectionsDto> getUsers() {
+		return userTransformer.toUserWithConnectionsDto(userService.getAllUsers());
 	}
 }

@@ -1,7 +1,11 @@
 package com.balonek.connections.controller.transport;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class RegistrationRequestDto {
+    @NotEmpty
     private String username;
+    @NotEmpty
     private String password;
 
     public String getUsername() {

@@ -31,6 +31,7 @@ import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -67,7 +68,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserWithConnectionsDto connectUsers(
             @PathVariable String userId,
-            @RequestBody ConnectionRequestDto connectionRequestDto,
+            @Valid @RequestBody ConnectionRequestDto connectionRequestDto,
             @AuthenticationPrincipal User authenticatedUser) {
         if (!userId.equals(authenticatedUser.getUserId())){
             throw new AuthorizationException("Connection can be created only for the authenticated user.");
