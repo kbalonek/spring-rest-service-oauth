@@ -2,7 +2,7 @@
 
 The RESTful web-service that allows registering and connecting users.
 
-It's build with Spring Boot and Spring Security OAuth.
+It's built with Spring Boot and Spring Security OAuth.
 It uses http://oauthlib.readthedocs.org/en/latest/oauth2/grants/password.html[Resource Owner Password Credentials Grant]
 to protect its endpoints.
 
